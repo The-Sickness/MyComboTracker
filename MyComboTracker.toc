@@ -2,7 +2,7 @@
 ## Title: My Combo Tracker
 ## Notes: Display of scrolling Combo Points for Rogues. Audible Alert at 5 Combo Points. Resizable Fonts.
 ## Author: Sharpedge_Gaming
-## Version: v1.1
+## Version: v1.2
 ## SavedVariables: MyComboTrackerDB
 ## IconTexture: 132299
 
