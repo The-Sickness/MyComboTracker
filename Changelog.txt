@@ -1,7 +1,7 @@
 5/14/23
 Released v1.1
 
-5/15/23
+5/15/23  v1.2
 Added more sounds (10) total
 Fixed the sound for when sin hits 5 combo points, and sin/outlaw hit 6
 
