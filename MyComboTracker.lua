@@ -1,6 +1,6 @@
 -- My Combo Tracker
 -- Made by Sharpedge_Gaming
--- v1.1 - 10.1
+-- v1.3 - 10.1
 
 local addonName, addonTable = ...
 local AceAddon = LibStub("AceAddon-3.0")
