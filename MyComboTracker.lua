@@ -136,6 +136,7 @@ function MyComboTracker:OnInitialize()
         ["Sound8"] = "Interface\\Addons\\MyComboTracker\\sounds\\Gun Cocking.mp3",
         ["Sound9"] = "Interface\\Addons\\MyComboTracker\\sounds\\Laser.mp3",
         ["Sound10"] = "Interface\\Addons\\MyComboTracker\\sounds\\Target Acquired.mp3",
+		["Sound11"] = "Interface\\Addons\\MyComboTracker\\sounds\\NoAlert.mp3",
     }
 
     local soundOptionNames = {
@@ -149,6 +150,7 @@ function MyComboTracker:OnInitialize()
         ["Sound8"] = "Gun Cocking",
         ["Sound9"] = "Laser",
         ["Sound10"] = "Target Acquired",
+		["Sound11"] = "No Alert",
     }
 
     local options = {
