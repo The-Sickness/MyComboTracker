@@ -1,6 +1,6 @@
 -- My Combo Tracker
 -- Made by Sharpedge_Gaming
--- v1.3 - 10.1
+-- v1.4 - 10.1
 
 local addonName, addonTable = ...
 local AceAddon = LibStub("AceAddon-3.0")
@@ -33,15 +33,28 @@ fade:SetStartDelay(1)
 
 ag:SetScript("OnFinished", function() text:Hide() end)
 
-local function PlaySoundAtComboPoints(comboPoints)
-    local specialization = GetSpecialization()
-    local selectedSound = MyComboTrackerSettings.selectedSound
+-- Define table containing info for different specializations.
+local specializationData = {
+    [1] = { maxComboPoints = 5, soundSuffix = "" }, -- Assassination Rogue
+    [2] = { maxComboPoints = 5, soundSuffix = "" }, -- Feral Druid
+    [3] = { maxComboPoints = 6, soundSuffix = "_6" }, -- Subtlety Rogue
+    [4] = { maxComboPoints = 6, soundSuffix = "" }, -- Outlaw Rogue
+}
 
-    if (specialization == 1 and comboPoints == 5) or ((specialization == 2 or specialization == 3) and comboPoints == 6) then
-        if selectedSound then
-            local soundFile = MyComboTrackerSettings.soundOptions[selectedSound]
-            if soundFile then
-                PlaySoundFile(soundFile, "Master")
+local function PlaySoundAtComboPoints(comboPoints)
+    local spec = GetSpecialization()
+    local specData = specializationData[spec]
+    
+    if specData then
+        if comboPoints >= specData.maxComboPoints then
+            local selectedSound = MyComboTrackerSettings.selectedSound .. specData.soundSuffix
+            
+            if selectedSound then
+                local soundFile = MyComboTrackerSettings.soundOptions[selectedSound]
+                
+                if soundFile then
+                    PlaySoundFile(soundFile, "Master")
+                end
             end
         end
     end
@@ -67,21 +80,12 @@ local function CheckSpec()
     local spec = GetSpecialization()
     if spec ~= currentSpec then
         currentSpec = spec
-        if currentSpec == 2 then -- Subtlety Rogue
+        local specData = specializationData[currentSpec]
+
+        if specData then
             local comboPoints = UnitPower("player", Enum.PowerType.ComboPoints)
-            if comboPoints >= 6 then
-                local selectedSound = MyComboTrackerSettings.selectedSound .. "_6"
-                if selectedSound then
-                    local soundFile = MyComboTrackerSettings.soundOptions[selectedSound]
-                    if soundFile then
-                        PlaySoundFile(soundFile, "Master")
-                    end
-                end
-            end
-        elseif currentSpec == 1 then -- Assassin Rogue
-            local comboPoints = UnitPower("player", Enum.PowerType.ComboPoints)
-            if comboPoints == 5 then
-                local selectedSound = MyComboTrackerSettings.selectedSound
+            if comboPoints >= specData.maxComboPoints then
+                local selectedSound = MyComboTrackerSettings.selectedSound .. specData.soundSuffix
                 if selectedSound then
                     local soundFile = MyComboTrackerSettings.soundOptions[selectedSound]
                     if soundFile then
