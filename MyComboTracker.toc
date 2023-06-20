@@ -2,13 +2,9 @@
 ## Title: My Combo Tracker
 ## Notes: Display of scrolling Combo Points for Rogues. Audible Alert at 5 Combo Points. Resizable Fonts.
 ## Author: Sharpedge_Gaming
-## Version: v1.3
+## Version: v1.4
 ## SavedVariables: MyComboTrackerDB
 ## IconTexture: 132299
-
-MyComboTracker.lua
-
-
 
 lib\LibStub\LibStub.lua
 lib\AceAddon-3.0\AceAddon-3.0.lua
@@ -19,3 +15,5 @@ lib\AceGUI-3.0\AceGUI-3.0.lua
 lib\AceDB-3.0\AceDB-3.0.lua
 lib\AceDBOptions-3.0\AceDBOptions-3.0.lua
 lib\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+
+MyComboTracker.lua
