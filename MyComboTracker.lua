@@ -47,7 +47,7 @@ local function PlaySoundAtComboPoints(comboPoints)
     
     if specData then
         if comboPoints >= specData.maxComboPoints then
-            local selectedSound = MyComboTrackerSettings.selectedSound .. specData.soundSuffix
+            local selectedSound = MyComboTrackerSettings.selectedSound
             
             if selectedSound then
                 local soundFile = MyComboTrackerSettings.soundOptions[selectedSound]
@@ -59,6 +59,7 @@ local function PlaySoundAtComboPoints(comboPoints)
         end
     end
 end
+
 
 local function UpdateComboPoints()
     local comboPoints = UnitPower("player", Enum.PowerType.ComboPoints)
