@@ -1,6 +1,6 @@
 -- My Combo Tracker
 -- Made by Sharpedge_Gaming
--- v1.4 - 10.1
+-- v1.5 - 10.1.7
 
 local addonName, addonTable = ...
 local AceAddon = LibStub("AceAddon-3.0")
@@ -39,7 +39,9 @@ local specializationData = {
     [2] = { maxComboPoints = 5, soundSuffix = "" }, -- Feral Druid
     [3] = { maxComboPoints = 6, soundSuffix = "_6" }, -- Subtlety Rogue
     [4] = { maxComboPoints = 6, soundSuffix = "" }, -- Outlaw Rogue
+    [70] = { maxHolyPowerPoints = 5, soundSuffix = "" }, -- Retribution Paladin
 }
+
 
 local function PlaySoundAtComboPoints(comboPoints)
     local spec = GetSpecialization()
@@ -64,7 +66,7 @@ end
 local function UpdateComboPoints()
     local comboPoints = UnitPower("player", Enum.PowerType.ComboPoints)
     if comboPoints and comboPoints > 0 then
-        text:SetText(comboPoints .. " Combo!")
+        text:SetText(comboPoints)
         text:SetAlpha(1)
         text:Show()
         ag:Stop()
@@ -74,6 +76,7 @@ local function UpdateComboPoints()
         PlaySoundAtComboPoints(comboPoints)
     end
 end
+
 
 local currentSpec = -1
 
@@ -98,14 +101,38 @@ local function CheckSpec()
     end
 end
 
+-- Create the text label for Holy Power
+local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+label:SetFont("Fonts\\FRIZQT__.TTF", 20, "OUTLINE")
+label:SetPoint("CENTER", frame, "CENTER")
+
+
 frame:RegisterEvent("UNIT_POWER_UPDATE")
 frame:RegisterEvent("ADDON_LOADED")
 frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-frame:SetScript("OnEvent", function(self, event, ...)
-    if event == "UNIT_POWER_UPDATE" then
-        local unit, powerType = ...
-        if unit == "player" and powerType == "COMBO_POINTS" then
+
+local function OnEvent(self, event, ...)
+    local unit, powerType = ...
+    if unit == "player" then
+        if powerType == "COMBO_POINTS" then
+            -- Update combo points
             UpdateComboPoints()
+        elseif powerType == "HOLY_POWER" then
+            -- Get current Holy Power
+            local currentPower = UnitPower("player", SPELL_POWER_HOLY_POWER)
+            
+            -- Update the label with Holy Power
+            if currentPower and currentPower > 0 and currentPower <= 5 then
+                label:SetText(tostring(currentPower))
+                label:SetAlpha(1)
+                label:Show()
+                ag:Stop()
+                move:SetOffset(0, 200)
+                ag:Play()
+            else
+                label:SetText("")
+                label:Hide()
+            end
         end
     elseif event == "ADDON_LOADED" and ... == "MyComboTracker" then
         if not MyComboTrackerSettings.textSize then
@@ -120,7 +147,16 @@ frame:SetScript("OnEvent", function(self, event, ...)
     elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
         CheckSpec()
     end
-end)
+end
+
+frame:RegisterEvent("UNIT_POWER_UPDATE")
+frame:RegisterEvent("ADDON_LOADED")
+frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+-- Set event handler
+frame:SetScript("OnEvent", OnEvent)
+
+-- Set event handler
+frame:SetScript("OnEvent", OnEvent)
 
 function MyComboTracker:OnInitialize()
     if self.initialized then return end
