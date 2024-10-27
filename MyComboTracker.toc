@@ -1,8 +1,8 @@
-## Interface: 100207, 110000
+## Interface: 110005
 ## Title: My Combo Tracker
 ## Notes: Display of scrolling Combo Points for Rogues. Audible Alert at 5 Combo Points. Resizable Fonts.
 ## Author: Sharpedge_Gaming
-## Version: v1.9
+## Version: v2.0
 ## SavedVariables: MyComboTrackerDB
 ## IconTexture: 132299
 

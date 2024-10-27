@@ -1,6 +1,6 @@
 -- My Combo Tracker
 -- Made by Sharpedge_Gaming
--- v1.9 - 11.0.0
+-- v2.0 - 11.0.5
 
 local addonName, addonTable = ...
 local AceAddon = LibStub("AceAddon-3.0")
@@ -42,6 +42,7 @@ local specializationData = {
     [70] = { maxHolyPowerPoints = 5, soundSuffix = "" }, -- Retribution Paladin
 }
 
+
 local function PlaySoundAtComboPoints(comboPoints)
     local spec = GetSpecialization()
     local specData = specializationData[spec]
@@ -61,31 +62,9 @@ local function PlaySoundAtComboPoints(comboPoints)
     end
 end
 
-local function GetComboPointsForClass()
-    local combo = 0
-    local playerClass = select(2, UnitClass("player"))
-    local spec = GetSpecialization()
-
-    if playerClass == "ROGUE" or playerClass == "DRUID" then
-        combo = GetComboPoints("player", "target")
-    elseif playerClass == "PALADIN" then
-        combo = UnitPower("player", Enum.PowerType.HolyPower)
-    elseif playerClass == "MAGE" then
-        combo = UnitPower("player", Enum.PowerType.ArcaneCharges, true)
-    elseif playerClass == "MONK" and spec == 3 then
-        combo = UnitPower("player", Enum.PowerType.Chi)
-    elseif playerClass == "WARLOCK" then
-        combo = UnitPower("player", Enum.PowerType.SoulShards)
-    elseif playerClass == "DEATHKNIGHT" and spec == 1 then
-        local name, _ = GetSpellInfo(195181) -- Bone Shield
-        combo, _ = select(3, AuraUtil.FindAuraByName(name, 'player', 'HELPFUL|PLAYER')) or 0
-    end
-
-    return combo
-end
 
 local function UpdateComboPoints()
-    local comboPoints = GetComboPointsForClass()
+    local comboPoints = UnitPower("player", Enum.PowerType.ComboPoints)
     if comboPoints and comboPoints > 0 then
         text:SetText(comboPoints)
         text:SetAlpha(1)
@@ -98,6 +77,7 @@ local function UpdateComboPoints()
     end
 end
 
+
 local currentSpec = -1
 
 local function CheckSpec()
@@ -107,7 +87,7 @@ local function CheckSpec()
         local specData = specializationData[currentSpec]
 
         if specData then
-            local comboPoints = GetComboPointsForClass()
+            local comboPoints = UnitPower("player", Enum.PowerType.ComboPoints)
             if comboPoints >= specData.maxComboPoints then
                 local selectedSound = MyComboTrackerSettings.selectedSound .. specData.soundSuffix
                 if selectedSound then
@@ -126,6 +106,7 @@ local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 label:SetFont("Fonts\\FRIZQT__.TTF", 20, "OUTLINE")
 label:SetPoint("CENTER", frame, "CENTER")
 
+
 frame:RegisterEvent("UNIT_POWER_UPDATE")
 frame:RegisterEvent("ADDON_LOADED")
 frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
@@ -133,8 +114,25 @@ frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 local function OnEvent(self, event, ...)
     local unit, powerType = ...
     if unit == "player" then
-        if powerType == "COMBO_POINTS" or powerType == "HOLY_POWER" then
+        if powerType == "COMBO_POINTS" then
+            -- Update combo points
             UpdateComboPoints()
+        elseif powerType == "HOLY_POWER" then
+            -- Get current Holy Power
+            local currentPower = UnitPower("player", SPELL_POWER_HOLY_POWER)
+            
+            -- Update the label with Holy Power
+            if currentPower and currentPower > 0 and currentPower <= 5 then
+                label:SetText(tostring(currentPower))
+                label:SetAlpha(1)
+                label:Show()
+                ag:Stop()
+                move:SetOffset(0, 200)
+                ag:Play()
+            else
+                label:SetText("")
+                label:Hide()
+            end
         end
     elseif event == "ADDON_LOADED" and ... == "MyComboTracker" then
         if not MyComboTrackerSettings.textSize then
@@ -157,6 +155,9 @@ frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 -- Set event handler
 frame:SetScript("OnEvent", OnEvent)
 
+-- Set event handler
+frame:SetScript("OnEvent", OnEvent)
+
 function MyComboTracker:OnInitialize()
     if self.initialized then return end
     self.initialized = true
@@ -176,7 +177,7 @@ function MyComboTracker:OnInitialize()
         ["Sound8"] = "Interface\\Addons\\MyComboTracker\\sounds\\Gun Cocking.mp3",
         ["Sound9"] = "Interface\\Addons\\MyComboTracker\\sounds\\Laser.mp3",
         ["Sound10"] = "Interface\\Addons\\MyComboTracker\\sounds\\Target Acquired.mp3",
-        ["Sound11"] = "Interface\\Addons\\MyComboTracker\\sounds\\NoAlert.mp3",
+		["Sound11"] = "Interface\\Addons\\MyComboTracker\\sounds\\NoAlert.mp3",
     }
 
     local soundOptionNames = {
@@ -190,7 +191,7 @@ function MyComboTracker:OnInitialize()
         ["Sound8"] = "Gun Cocking",
         ["Sound9"] = "Laser",
         ["Sound10"] = "Target Acquired",
-        ["Sound11"] = "No Alert",
+		["Sound11"] = "No Alert",
     }
 
     local options = {
@@ -275,3 +276,31 @@ function MyComboTracker:OnInitialize()
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
